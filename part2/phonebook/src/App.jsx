@@ -37,10 +37,16 @@ const App = () => {
     }
   }
 
-  const deletePerson = id => {
-    personService.deleteF(id).then(response => {
-      setPersons(persons.filter(person => person.id !== id));
-    })
+  const deletePerson = person => {
+    const id = person.id
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService.deleteF(id).then(response => {
+        setPersons(persons.filter(person => person.id !== id));
+      })
+      personService.getAll().then(response => {
+        setPersons(response);
+      })
+    }
   }
 
   const handleNameChange = (event) => {
@@ -61,7 +67,7 @@ const App = () => {
       handleNumberChange = {handleNumberChange} addPerson = {addPerson} />
       <h2>Numbers</h2>
       {persons.map(person =>
-        <Person key={person.name} person={person} filter={newFilter} deletePerson = {() => deletePerson(person.id)}/>
+        <Person key={person.name} person={person} filter={newFilter} deletePerson = {() => deletePerson(person)}/>
       )}
     </div>
   )
