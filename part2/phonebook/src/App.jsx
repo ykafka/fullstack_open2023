@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import Content from './Content.jsx'
+import Person from './Person.jsx'
 import axios from 'axios'
 import personService from './services/person'
 import PersonForm from './PersonForm.jsx'
@@ -37,6 +37,12 @@ const App = () => {
     }
   }
 
+  const deletePerson = id => {
+    personService.deleteF(id).then(response => {
+      setPersons(persons.filter(person => person.id !== id));
+    })
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -54,7 +60,9 @@ const App = () => {
       <PersonForm newName = {newName} handleNameChange = {handleNameChange} newNumber= {newNumber} 
       handleNumberChange = {handleNumberChange} addPerson = {addPerson} />
       <h2>Numbers</h2>
-      <Content persons = {persons} newFilter={newFilter} />
+      {persons.map(person =>
+        <Person key={person.name} person={person} filter={newFilter} deletePerson = {() => deletePerson(person.id)}/>
+      )}
     </div>
   )
 }
