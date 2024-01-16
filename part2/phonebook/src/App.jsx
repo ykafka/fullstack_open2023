@@ -11,6 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [newNotification, setNotification] = useState(null)
 
   useEffect(() => {
     personService.getAll().then(response => {
@@ -31,6 +32,12 @@ const App = () => {
         const changedPerson = {...person, number: newNumber}
         console.log(personId)
         personService.update(personId, changedPerson).then(response => {
+          setNotification(
+            `'${newName}''s number was changed successfully`
+          )
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
           setPersons(persons.map(person => person.id !== personId? person : response.data)),
           setNewName(''),
           setNewNumber('')
@@ -38,6 +45,12 @@ const App = () => {
       }
     } else {
       personService.create(personObject).then(response => {
+        setNotification(
+          `'${newName}' was added successfully`
+        )
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
         setPersons(persons.concat(personObject)),
         setNewName(''),
         setNewNumber('')
@@ -47,13 +60,21 @@ const App = () => {
 
   const deletePerson = person => {
     const id = person.id
+    console.log(id)
     if (window.confirm(`Delete ${person.name}?`)) {
+      const temp = person.name
       personService.deleteF(id).then(response => {
         setPersons(persons.filter(person => person.id !== id));
       })
       personService.getAll().then(response => {
         setPersons(response);
       })
+      setNotification(
+        `'${temp}' was deleted successfully`
+      )
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     }
   }
 
@@ -65,9 +86,32 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const NotificationMessage = ({ message }) => {
+    const noficationStyle = {
+      color: "green",
+      background: "lightgrey",
+      fontSize: 20,
+      borderStyle: "solid",
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 10
+    }
+
+    if (message === null) {
+      return null
+    }
+
+    return (
+      <div style={noficationStyle}>
+        {message}
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <NotificationMessage message={newNotification} />
       <div>
         <Filter newFilter={newFilter} setNewFilter={setNewFilter} />
       </div>
