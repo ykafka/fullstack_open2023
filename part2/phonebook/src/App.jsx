@@ -42,6 +42,14 @@ const App = () => {
           setNewName(''),
           setNewNumber('')
         })
+        .catch(error => {
+          setNotification(
+            `'${newName} has already been removed`
+          )
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        })
       }
     } else {
       personService.create(personObject).then(response => {
@@ -55,6 +63,14 @@ const App = () => {
         setNewName(''),
         setNewNumber('')
       })
+      .catch(error => {
+        setNotification(
+          `'${newName} has already been removed`
+        )
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      })
     }
   }
 
@@ -65,9 +81,23 @@ const App = () => {
       const temp = person.name
       personService.deleteF(id).then(response => {
         setPersons(persons.filter(person => person.id !== id));
+      }).catch(error => {
+        setNotification(
+          `'${newName} has already been removed`
+        )
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
       })
       personService.getAll().then(response => {
         setPersons(response);
+      }).catch(error => {
+        setNotification(
+          `Could not retrive data`
+        )
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
       })
       setNotification(
         `'${temp}' was deleted successfully`
