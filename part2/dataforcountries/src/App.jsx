@@ -35,9 +35,13 @@ const App = () => {
         )
     }
 
+    const buttonSet = ({ country }) => {
+        setNewFilter(country.name.common)
+    }
+
     const DisplayCountries = ({countries, newfilter}) => {
         const filtered = countries.filter(country =>
-            country.name.common.toUpperCase().includes(newfilter.toUpperCase())
+            (country.name.common).toUpperCase().includes(newfilter.toUpperCase())
         )
         const length = filtered.length;
         
@@ -55,7 +59,7 @@ const App = () => {
             return (
                 filtered.map(country => (
                     <div key = {country.name.common}>
-                        {country.name.common}
+                        {country.name.common} <button value={country.name} onClick={() => buttonSet({country})}>show</button>
                     </div>
                 ))
             )
